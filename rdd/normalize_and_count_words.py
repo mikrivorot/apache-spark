@@ -26,7 +26,7 @@ def normalizeWords(text):
 conf = SparkConf().setMaster("local").setAppName("WordCount")
 sc = SparkContext(conf = conf)
 
-input = sc.textFile("data/Book")
+input = sc.textFile("../data/Book")
 words = input.flatMap(normalizeWords)
 
 # Same as we do with friends -> manually count

@@ -20,3 +20,5 @@ python test_1.py
 [RDD](./docs/RDD.md)
 
 [First exmaple + explanation](./docs/QuickStart.md)
+
+### Spark SQL: DataFrames and DataSets

@@ -9,7 +9,7 @@ import collections
 
 conf = SparkConf().setMaster("local").setAppName("TotalSpentByCustomer")
 sc = SparkContext(conf = conf)
-input = sc.textFile("data/customer-orders.csv")
+input = sc.textFile("../data/customer-orders.csv")
 
 
 # line: customer_id, _, spent_amount

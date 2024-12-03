@@ -9,8 +9,8 @@ conf = SparkConf().setMaster("local").setAppName("RatingsHistogram")
 sc = SparkContext(conf = conf)
 sc.setLogLevel('OFF')
 
-lines = sc.textFile('./data/ml-100k/u.data')
-# 196	242	3	881250949
+lines = sc.textFile('../data/ml-100k/u.data')
+# 196	242	3	88125.949
 ratings = lines.map(lambda x: x.split()[2])
 result = ratings.countByValue()
 
