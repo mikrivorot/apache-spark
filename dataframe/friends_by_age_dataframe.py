@@ -1,20 +1,18 @@
 # to find where spark is installed
 import findspark
 findspark.init()
-from pyspark.sql import Row, SparkSession, functions
+from pyspark.sql import SparkSession, functions, DataFrame
 spark = SparkSession.builder.appName("SparkSQL").getOrCreate()
 
 # userID,name,age,friends
 # 0,Will,33,385
 # 1,Jean-Luc,26,2
-friendsAsDataFrame = spark.read\
+friendsAsDataFrame: DataFrame = spark.read\
     .option("header", "true")\
     .option("inferSchema", "true")\
-    .csv("./data/fakefriends-header.csv")
+    .csv("./data/fakefriends-header.csv") \
+    .select('age', 'friends')
     
-
-friendsAsDataFrame = friendsAsDataFrame.select('age', 'friends')
-
 # groupBy("age"): Group people by age (e.g. 31 years: 192, 15, 481, 340, 172, 109, 394 and 435 friends)
 # count(): Count grouped elements (e.g. 8 persons are 31 years old)
 friendsAsDataFrame.groupBy("age").count().show()

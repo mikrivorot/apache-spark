@@ -1,20 +1,20 @@
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql import functions as func
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType
 
-spark = SparkSession.builder.appName("MinTemperatures").getOrCreate()
+spark: SparkSession = SparkSession.builder.appName("MinTemperatures").getOrCreate()
 
 # Set schema
-schema = StructType([ \
+schema: StructType = StructType([ \
                     StructField("stationID", StringType(), True), \
                     StructField("date", IntegerType(), True), \
                     StructField("measure_type", StringType(), True), \
                     StructField("temperature", FloatType(), True)])
 
 # Read the file as dataframe
-df = spark.read.schema(schema).csv("./data/1800.csv")
+df: DataFrame = spark.read.schema(schema).csv("./data/1800.csv")
 
-minTempsByStationF = df \
+minTempsByStationF: DataFrame = df \
     .filter(df.measure_type == "TMIN") \
     .select("stationID", "temperature") \
     .groupBy("stationID")\

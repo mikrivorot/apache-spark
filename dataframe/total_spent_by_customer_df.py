@@ -1,19 +1,19 @@
 # customer_id, _, spent_amount
 # 44,8602,37.19
-from pyspark.sql import SparkSession, functions as func
+from pyspark.sql import SparkSession, functions as func, DataFrame
 from pyspark.sql.types import StructType, StructField, IntegerType, FloatType
 
 import findspark
 findspark.init()
 
-spark = SparkSession.builder.appName("MinTemperatures").getOrCreate()
+spark: SparkSession = SparkSession.builder.appName("MinTemperatures").getOrCreate()
 
-schema = StructType([ \
+schema: StructType = StructType([ \
                     StructField("customer_id", IntegerType(), True), \
                     StructField("smth", IntegerType(), True), \
                     StructField("spent_amount", FloatType(), True)])
 
-df = spark.read.schema(schema).csv("./data/customer-orders.csv")
+df: DataFrame = spark.read.schema(schema).csv("./data/customer-orders.csv")
 
 total_spent_by_customer = df\
     .select("customer_id", "spent_amount")\
