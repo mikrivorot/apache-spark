@@ -4,24 +4,33 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType, 
 
 spark: SparkSession = SparkSession.builder.appName("MinTemperatures").getOrCreate()
 
-# Set schema
 schema: StructType = StructType([ \
                     StructField("stationID", StringType(), True), \
                     StructField("date", IntegerType(), True), \
                     StructField("measure_type", StringType(), True), \
                     StructField("temperature", FloatType(), True)])
 
-# Read the file as dataframe
 df: DataFrame = spark.read.schema(schema).csv("./data/1800.csv")
 
-minTempsByStationF: DataFrame = df \
+minTempsByStation: DataFrame = df \
     .filter(df.measure_type == "TMIN") \
     .select("stationID", "temperature") \
     .groupBy("stationID")\
     .min("temperature") \
-    .withColumn("f_temperature", func.round(func.col("min(temperature)") * 0.1 * (9.0 / 5.0) + 32.0, 2)) \
-    .select("stationID", "f_temperature")\
-    .sort("f_temperature")
+    .withColumn("c_temperature", func.col("min(temperature)")) \
+    .select("stationID", "c_temperature")\
+    .sort("c_temperature")
 
-minTempsByStationF.show()
+maxTempsByStation: DataFrame = df \
+    .filter(df.measure_type == "TMAX") \
+    .select("stationID", "temperature") \
+    .groupBy("stationID")\
+    .max("temperature") \
+    .withColumn("c_temperature", func.col("max(temperature)")) \
+    .select("stationID", "c_temperature")\
+    .sort("c_temperature")
+
+minTempsByStation.show()
+maxTempsByStation.show()
+
 spark.stop()
