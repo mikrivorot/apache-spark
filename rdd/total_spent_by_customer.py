@@ -5,7 +5,6 @@ import findspark
 findspark.init()
 
 from pyspark import SparkConf, SparkContext
-import collections
 
 conf = SparkConf().setMaster("local").setAppName("TotalSpentByCustomer")
 sc = SparkContext(conf = conf)

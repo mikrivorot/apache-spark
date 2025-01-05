@@ -15,10 +15,33 @@ python test_1.py
 
 ```
 
-
 ### Spark Basics
 [RDD](./docs/RDD.md)
 
 [First exmaple + explanation](./docs/QuickStart.md)
 
-### Spark SQL: DataFrames and DataSets
+### Run examples
+#### Min / Max tempteratures
+```
+python -m rdd.max_min_temperatures
+
+python -m dataframe.max_min_temperatures
+
+python -m spark_sql.max_min_temperatures
+```
+
+```
++-----------+-------------+
+|  stationID|c_temperature|
++-----------+-------------+
+|ITE00100554|       -148.0|
+|EZE00100082|       -135.0|
++-----------+-------------+
+
++-----------+-------------+
+|  stationID|c_temperature|
++-----------+-------------+
+|ITE00100554|        323.0|
+|EZE00100082|        323.0|
++-----------+-------------+
+```
