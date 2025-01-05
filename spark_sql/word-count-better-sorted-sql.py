@@ -1,7 +1,6 @@
-from pyspark.sql import SparkSession
-from pyspark.sql import functions as func
+from pyspark.sql import SparkSession, DataFrame
 
-spark = SparkSession.builder.appName("WordCount").getOrCreate()
+spark: SparkSession = SparkSession.builder.appName("WordCount").getOrCreate()
 
 # Read each line of my book into a dataframe
 # The content of each row is stored under a default column named value.
@@ -12,7 +11,7 @@ spark = SparkSession.builder.appName("WordCount").getOrCreate()
 # |Achieving Financial and Personal Freedom through a Lifestyle Technology Business|
 # |By Frank Kane                                                                   |
 # +--------------------------------------------------------------------------------+
-inputDF = spark.read.text("./data/Book")
+inputDF: DataFrame = spark.read.text("./data/Book")
 # Register the inputDF as a temporary view
 inputDF.createOrReplaceTempView("input_view")
 
