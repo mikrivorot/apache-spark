@@ -132,25 +132,29 @@ moviePairsWithAdjustedRating: DataFrame = dataWithAdjustedRatings.alias("ratings
 moviePairSimilarities = computeCosineSimilarity(moviePairsWithAdjustedRating).cache()
 
 if (len(sys.argv) > 1):
-    scoreThreshold = 0 # as negative numbers are possible after 'normalization'
-    coOccurrenceThreshold = 50.0
+    scoreThreshold = 0.6 # = a cos(angle between vectors)
+    coOccurrenceThreshold = 60
 
     movieID = int(sys.argv[1])
 
     # Filter for movies with this sim that are "good" as defined by
     # our quality thresholds above
     filteredResults = moviePairSimilarities.filter( \
-        (
-          # pair exist
-          (func.col("movie1") == movieID) | (func.col("movie2") == movieID)) & \
+          (
+            # pair exist
+            (func.col("movie1") == movieID) | (func.col("movie2") == movieID)
+          ) & \
             
           (
             # two vectors are close enough
-            func.col("score") > scoreThreshold) & 
+            func.col("score") > scoreThreshold
+          ) 
+          & 
           (
-            # more than 50 people watched both movies 
-            func.col("numberOfPairOccurrences") > coOccurrenceThreshold)
+            # more than X people watched both movies 
+            func.col("numberOfPairOccurrences") > coOccurrenceThreshold
           )
+        )
 
     # Sort by quality score.
     results = filteredResults.sort(func.col("score").desc()).take(10)
@@ -164,7 +168,7 @@ if (len(sys.argv) > 1):
           similarMovieID = result.movie2
         
         print(getMovieName(movieNames, similarMovieID) + "\tscore: " \
-              + str(result.score) + "\tstrength: " + str(result.numberOfPairOccurrences))
+              + str(result.score) +  "\tnumber of shared ratings: " + str(result.numberOfPairOccurrences))
         
 # Top 10 similar movies for Star Wars (1977)                                      
 # Empire Strikes Back, The (1980) score: 0.8262872791622538       strength: 345
