@@ -3,45 +3,34 @@ from pyspark.sql import functions as func
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, LongType
 import sys
 
-def computeEuclideanSimilarity(data: DataFrame) -> DataFrame:
-    # Compute squared differences
-    
-    # +------+------+-------+-------+------------------+                              
-    # |movie1|movie2|rating1|rating2|squared_difference|
-    # +------+------+-------+-------+------------------+
-    # |   242|   269|      3|      3|               0.0|
-    # |   242|   845|      3|      4|               1.0|
-    # |   242|  1022|      3|      4|               1.0|
-    pairScores: DataFrame = data \
-        .withColumn("squared_difference", (func.col("rating1") - func.col("rating2")) ** 2)
+def computeJaccardSimilarity(data, ratingThreshold):
+    # only high ratings
+    filteredData: DataFrame = data.filter((func.col("rating1") >= ratingThreshold) & (func.col("rating2") >= ratingThreshold))
 
-    # +------+------+-------------------+-----------------------+                     
-    # |movie1|movie2|              score|numberOfPairOccurrences|
-    # +------+------+-------------------+-----------------------+
-    # |    51|   924|0.16952084719853724|                     15|
-    # |   451|   529|0.08495938795016529|                     30|
-    # |    86|   318| 0.0671481457783844|                     95|
-    # |    40|   167| 0.1639607805437114|                     23|
-    calculateSimilarity: DataFrame = pairScores \
-        .groupBy("movie1", "movie2") \
-        .agg(
-            func.sum("squared_difference").alias("sum_squared_difference"),  # Sum of squared differences
-            func.count("*").alias("numberOfPairOccurrences")  # Count of occurrences
-        ) \
-        .withColumn(
-            "score", 
-            1 / (1 + func.sqrt(func.col("sum_squared_difference")))  # Convert distance to similarity
-        ) \
-        .select("movie1", "movie2", "score", "numberOfPairOccurrences")  # Include occurrences
+    # Unique pairs, do not include [user,x,y] and [user,y,x]
+    uniquePairs: DataFrame = filteredData.select("movie1", "movie2", "userId").distinct()
 
-    return calculateSimilarity
+    # A∩B is the intersection (number of users who rated both movies) = count all pairs with  either movie1 or movie2
+    intersectionCount: DataFrame = uniquePairs.groupBy("movie1", "movie2") \
+        .agg(func.count("userId").alias("intersection"))
+
+    # A∪B is the union (number of distinct users who rated either movie) = count only unique (both movie1 and movie2 presented in a pair)
+    unionCount: DataFrame = uniquePairs.groupBy("movie1", "movie2") \
+        .agg(func.countDistinct("userId").alias("union"))
+
+    #  INNER JOIN two DataFrames
+    jaccardScores: DataFrame = intersectionCount\
+        .join(unionCount, on=["movie1", "movie2"], how="inner")\
+        .withColumn("score", func.col("intersection") / func.col("union"))
+
+    return jaccardScores
+
 
 def getMovieNameByMovieId(movieNames: DataFrame, movieId: int) -> DataFrame:
     result = movieNames.filter(func.col("movieID") == movieId) \
         .select("movieTitle").collect()[0]
 
     return result[0]
-
 
 spark: SparkSession = SparkSession.builder.appName("MovieSimilarities").master("local[*]").getOrCreate()
 
@@ -75,33 +64,40 @@ ratings: DataFrame = movies.select("userId", "movieId", "rating") # dedicated va
 moviePairs: DataFrame = ratings.alias("ratings1") \
     .join(ratings.alias("ratings2"), (func.col("ratings1.userId") == func.col("ratings2.userId")) \
             & (func.col("ratings1.movieId") < func.col("ratings2.movieId"))) \
-    .select(func.col("ratings1.movieId").alias("movie1"), \
+    .select(     
+        func.col("ratings2.userId").alias("userId"), \
+        func.col("ratings1.movieId").alias("movie1"), \
         func.col("ratings2.movieId").alias("movie2"), \
         func.col("ratings1.rating").alias("rating1"), \
         func.col("ratings2.rating").alias("rating2"))
 
-moviePairSimilarities: DataFrame = computeEuclideanSimilarity(moviePairs) \
+
+
+ratingThreshold = 4
+scoreThreshold = 1
+minSharedRatings = 240
+
+moviePairSimilarities: DataFrame = computeJaccardSimilarity(moviePairs, ratingThreshold) \
     .cache() # cache not really in use here, but useful when we request recommendations for multiple movies
 
 if (len(sys.argv) > 1):
-    scoreThreshold = 0.3
-    movieID = int(sys.argv[1]) # e.g. 50
-
+    movieID = int(sys.argv[1]) # e.g. 50 Star Wars (1977)     
     filteredResults = moviePairSimilarities \
         .filter(
             ((func.col("movie1") == movieID) | (func.col("movie2") == movieID)) &
             (func.col("movie1") != func.col("movie2")) &  # Exclude self-pairs
-            (func.col("score") >= scoreThreshold) &
-            (func.col("numberOfPairOccurrences") >= 10) 
+            (func.col("score") >= scoreThreshold) 
+            & (func.col("intersection") >= minSharedRatings)
         ) \
-        .sort(func.col("score").desc()) \
-        .take(10)
+        .sort(func.col("intersection").desc())
+    filteredResults.show()
 
     print ("Top 10 similar movies for " + getMovieNameByMovieId(movieNames, movieID))
 
-    for result in filteredResults:
+    for result in filteredResults.take(10):
         similarMovieID = result.movie1
         if (similarMovieID == movieID):
             similarMovieID = result.movie2
         
-        print(getMovieNameByMovieId(movieNames, similarMovieID) + "\tscore: "  + str(result.score)  +  "\tnumber of shared ratings: " + str(result.numberOfPairOccurrences))
+        print(getMovieNameByMovieId(movieNames, similarMovieID) + "\tscore: "  + str(result.score)  + "\tnumber of shared ratings: " + str(result.intersection) )
+

@@ -169,16 +169,3 @@ if (len(sys.argv) > 1):
         
         print(getMovieName(movieNames, similarMovieID) + "\tscore: " \
               + str(result.score) +  "\tnumber of shared ratings: " + str(result.numberOfPairOccurrences))
-        
-# Top 10 similar movies for Star Wars (1977)                                      
-# Empire Strikes Back, The (1980) score: 0.8262872791622538       strength: 345
-# Return of the Jedi (1983)       score: 0.7281820538032594       strength: 480
-# Raiders of the Lost Ark (1981)  score: 0.7142501268163446       strength: 380
-# Close Shave, A (1995)   score: 0.6593791029476354       strength: 92
-# 12 Angry Men (1957)     score: 0.6384721998021429       strength: 109
-# Wrong Trousers, The (1993)      score: 0.6087991576299646       strength: 103
-# Usual Suspects, The (1995)      score: 0.5964212951876744       strength: 223
-# Wallace & Gromit: The Best of Aardman Animation (1996)  score: 0.5939777531901022       strength: 58
-# L.A. Confidential (1997)        score: 0.5885224685158132       strength: 158
-# Bridge on the River Kwai, The (1957)    score: 0.5675231682967397       strength: 145
-        
