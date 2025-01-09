@@ -1,4 +1,6 @@
-## [Basic example](./raiting_counter.py) with explanation
+## This folder include same tasks, but developed using three approaches: RDD, DataFrames and Spark SQL
+
+### [Basic example](./raiting_counter.py) with explanation
 
 #### Find where spark is installed
 To solve an error 'Python: No module named ‘pyspark’ Error' install findspark
@@ -49,4 +51,17 @@ result = ratings.countByValue()
 #### Sort using OrderedDict (Dictionary that Remembers Insertion Order)
 ```python
 sortedResults = collections.OrderedDict(sorted(result.items()))
+```
+
+TODO: add description here
+
+
+### Run examples
+#### Min / Max tempteratures
+```
+python -m rdd.max_min_temperatures
+
+python -m dataframe.max_min_temperatures
+
+python -m spark_sql.max_min_temperatures
 ```

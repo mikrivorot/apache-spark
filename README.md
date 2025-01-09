@@ -1,47 +1,11 @@
-### Install all required packages
+## Spark overview
 
-```bash
-python3 -m venv venv
+This repository includes my attempts to understand how Apache Spark can be used
 
-source venv/bin/activate
+[Install](./docs/Install.md)  <- Basic installations to prepare environment
 
-brew install openjdk@17
-brew install scala
-brew install apache-spark
+[Basics](./basics/README.md) <- Compare RDD, DataFrames and Spark SQL usage for same small basic tasks 
 
-spark-sumbit test_1.py (/usr/local/Cellar/apache-spark/3.5.3/bin/spark-submit test_1.py)
+[Recommendation algorythms](./recommendation_algorithms/README.md) <- Generate recommendation comparing 4 algs and Spark DataFrames
 
-python test_1.py
-
-```
-
-### Spark Basics
-[RDD](./docs/RDD.md)
-
-[First exmaple + explanation](./docs/QuickStart.md)
-
-### Run examples
-#### Min / Max tempteratures
-```
-python -m rdd.max_min_temperatures
-
-python -m dataframe.max_min_temperatures
-
-python -m spark_sql.max_min_temperatures
-```
-
-```
-+-----------+-------------+
-|  stationID|c_temperature|
-+-----------+-------------+
-|ITE00100554|       -148.0|
-|EZE00100082|       -135.0|
-+-----------+-------------+
-
-+-----------+-------------+
-|  stationID|c_temperature|
-+-----------+-------------+
-|ITE00100554|        323.0|
-|EZE00100082|        323.0|
-+-----------+-------------+
-```
+[Streaming](./streaming/README.md) <- [WIP] Spark Streaming + Understand windows
