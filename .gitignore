@@ -5,4 +5,5 @@ venv
 data
 __pycache__
 streaming/logs
+/logs
 examples/*.py

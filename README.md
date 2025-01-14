@@ -8,4 +8,4 @@ This repository includes my attempts to understand how Apache Spark can be used
 
 [Recommendation algorythms](./recommendation_algorithms/README.md) <- Generate recommendation comparing 4 algs and Spark DataFrames
 
-[Streaming](./streaming/README.md) <- [WIP] Spark Streaming + Understand windows
+[Streaming](./streaming/README.md) <- [WIP] Spark Structured Streaming + Understand windows
