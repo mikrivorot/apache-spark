@@ -6,6 +6,6 @@ This repository includes my attempts to understand how Apache Spark can be used
 
 [Basics](./basics/README.md) <- Compare RDD, DataFrames and Spark SQL usage for same small basic tasks 
 
-[Recommendation algorythms](./recommendation_algorithms/README.md) <- Generate recommendation comparing 4 algs and Spark DataFrames
+[Recommendation algorithms](./recommendation_algorithms/README.md) <- Generate recommendation comparing 4 algorithms and Spark DataFrames
 
-[Streaming](./streaming/README.md) <- [WIP] Spark Structured Streaming + Understand windows
+[Streaming](./streaming/README.md) <- Spark Structured Streaming

@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession, DataFrame
-from pyspark.sql.functions import expr, when, col, concat, format_number, lit
+from pyspark.sql.functions import expr, when, col, concat, format_number, lit, window, to_timestamp
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
 spark: SparkSession = SparkSession.builder \
@@ -29,27 +29,22 @@ log_stream: DataFrame = spark.readStream \
         .schema(schema) \
         .load("./streaming/logs")
 
-admin_logs: DataFrame = log_stream.filter(col("method_url").contains("admin"))
-
-# .withColumn("failed", when(col("status") >= 400, 1).otherwise(0)):
-# +-----------+-------------------+------+---------+------+------------+------+
-# |ip         |timestamp          |method|url      |status|content_size|failed|
-# +-----------+-------------------+------+---------+------+------------+------+
-# |192.168.1.1|2025-01-14T10:00:00|POST  |/admin   |200   |3456        |0     |
-# |10.0.0.2   |2025-01-14T10:00:01|POST  |/admin   |500   |1234        |1     |
-# +-----------+-------------------+------+---------+------+------------+------+
-security_results = admin_logs \
+security_results: DataFrame = log_stream \
+    .filter(col("method_url").contains("admin")) \
     .withColumn("failed", when(col("status") >= 400, 1).otherwise(0)) \
-    .groupBy('method_url') \
+    .groupBy(
+        window(col("timestamp"), "10 seconds", "5 seconds"),  # Time-based window
+        col("method_url")  # Group by method_url
+    ) \
     .agg(
         concat(
             format_number((expr("sum(failed)") / expr("count(*)") * 100), 1),
             lit("%")
         ) \
             .alias("failed")
-    )
+    ) \
+        .orderBy(col("window").desc())
     
-# TODO: add second example 'availability_result' and 'availability_query' to do the same for /books* 500 using SQL, not DF
     
 security_query = ( security_results.writeStream.outputMode("complete").format("console").queryName("counts").start() )
 security_query.awaitTermination()

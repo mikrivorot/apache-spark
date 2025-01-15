@@ -1,7 +1,7 @@
 import os
 import random
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 # Possible HTTP methods and URLs
@@ -20,18 +20,19 @@ def generate_random_ip() -> str:
 
 def generate_fake_log() -> str:
     ip_address: str = generate_random_ip()
-    timestamp: str = datetime.now().strftime("%Y-%m-%dT%H:%M:%S%z")  # Current timestamp
+    timestamp: str = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z")  # Current timestamp
     method_and_url: str = random.choice(METHODS_AND_URLS)
     response_status: int = random.choice(RESPONSE_STATUSES)
     content_size: int = random.randint(100, 5000)  # Random content size in bytes
 
     # <random IP address> [<current timestamp>] "<method name url>" <response status> <content size>
-    log_line: str = f'{ip_address} [{timestamp}] "{method_and_url}" {response_status} {content_size}'
+    log_line: str = f'{ip_address} {timestamp} "{method_and_url}" {response_status} {content_size}'
+    time.sleep(1)
     return log_line
 
 def write_logs_to_file() -> None:
-    if not os.path.exists("logs"):
-        os.makedirs("logs")
+    if not os.path.exists("./streaming/logs"):
+        os.makedirs("./streaming/logs")
 
     filename: str = datetime.now().strftime("./streaming/logs/logs_%Y-%m-%dT%H-%M-%S%z.txt")
 
@@ -47,7 +48,7 @@ def main() -> None:
     try:
         while True:
             write_logs_to_file()
-            time.sleep(5)
+            time.sleep(10)
     except KeyboardInterrupt:
         print("\nStopping fake log generator.")
 
