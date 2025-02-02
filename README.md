@@ -1,6 +1,6 @@
 ## Spark overview
 
-This repository includes my attempts to understand how Apache Spark can be used
+This repository includes my attempts to understand how Apache Spark can be used + math examples and theory
 
 [Install](./docs/Install.md)  <- Basic installations to prepare environment
 
@@ -9,3 +9,5 @@ This repository includes my attempts to understand how Apache Spark can be used
 [Recommendation algorithms](./recommendation_algorithms/README.md) <- Generate recommendation comparing 4 algorithms and Spark DataFrames
 
 [Streaming](./streaming/README.md) <- Spark Structured Streaming
+
+[Machine Learning](./ml/README.md) <- Spark ML examples

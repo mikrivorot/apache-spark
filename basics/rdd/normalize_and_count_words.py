@@ -29,7 +29,6 @@ sc = SparkContext(conf = conf)
 input = sc.textFile("../data/Book")
 words = input.flatMap(normalizeWords)
 
-# Same as we do with friends -> manually count
 wordCounts = words\
     .map(lambda x: (x, 1))\
     .reduceByKey(lambda x, y: x + y)

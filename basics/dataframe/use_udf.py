@@ -6,7 +6,6 @@ from helpers.dict_movie_names import loadMovieNames, getLookupFunctionForDict
 
 sparkSession: SparkSession = SparkSession.builder.appName("PopularMovies").getOrCreate()
 
-# But where do we send it? To all nodes in a cluster?
 broadcastedDictionary: Broadcast = sparkSession.sparkContext.broadcast(loadMovieNames())
 
 schema: StructType = StructType([ \
