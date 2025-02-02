@@ -4,7 +4,7 @@ In this folder I experiment with three machine learning models available in Spar
 
 To calculate error I use `metricName="rmse"`  -  Root Mean Squared Error (RMSE) as the evaluation metric. RMSE measures the average error in predictions and gives more weight to large errors.
 
-![alt text](image.png)
+<img src="image.png" width="70%">
 
 A *lower RMSE* means the model predictions *are closer* to the actual values ( = better model)
 

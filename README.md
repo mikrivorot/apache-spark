@@ -1,6 +1,10 @@
-## Spark overview
+## Apache Spark overview
 
-This repository includes my attempts to understand how Apache Spark can be used + math examples and theory
+This repository includes my attempts to understand how Apache Spark can be used + math examples and theory.
+
+**TODOs**
+- add links to download test data
+- rework installation docs
 
 [Install](./docs/Install.md)  <- Basic installations to prepare environment
 

@@ -31,5 +31,4 @@ Run script:
 python -m dataframe.popular-movies-with_names_dataframe
 ```
 
-![](popular-movies-with_names_dataframe.png)
----
+<img src="./docs/screenshots/image.png" width="70%">
