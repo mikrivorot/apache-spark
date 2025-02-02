@@ -1,7 +1,5 @@
 ## This folder include same tasks, but developed using three approaches: RDD, DataFrames and Spark SQL
 
-### [Basic example](./raiting_counter.py) with explanation
-
 #### Find where spark is installed
 To solve an error 'Python: No module named ‘pyspark’ Error' install findspark
 https://sparkbyexamples.com/pyspark/python-no-module-named-pyspark-error/
@@ -52,9 +50,6 @@ result = ratings.countByValue()
 ```python
 sortedResults = collections.OrderedDict(sorted(result.items()))
 ```
-
-TODO: add description here
-
 
 ### Run examples
 #### Min / Max tempteratures

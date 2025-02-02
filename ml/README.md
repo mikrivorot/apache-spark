@@ -26,7 +26,8 @@ python ml/decision-tree-regression.py
 
 Executions result:
 ```
-TODO
+Root Mean Squared Error (RMSE): 8.0700465927444
+Model Training Execution Time: 2.09 seconds
 ```
 
 
@@ -48,7 +49,11 @@ python ml/decision-tree-regression-with-crossvalidator.py
 
 Executions result:
 ```
-TODO
+Best maxDepth: 3
+Best minInstancesPerNode: 5
+Best maxBins: 64
+Root Mean Squared Error (RMSE): 7.447789822244204
+Model Training Execution Time: 1.27 minutes
 ```
 
 ## Gradient Boosting Trees with CrossValidator on ParamsGrid:
@@ -106,5 +111,6 @@ python ml/gbt-regressor-sampling-cross-validator-min-max-scaler.py
 
 Executions result:
 ```
-TODO
+Model Training Execution Time: 1125.58 seconds
+Root Mean Squared Error (RMSE): 6.973901944593233
 ```
